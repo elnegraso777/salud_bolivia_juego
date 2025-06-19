@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Salva Bolivia Saludable</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f2f2f2;
+      color: #333;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #009688;
+    }
+
+    .question-container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin: auto;
+      max-width: 600px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      transition: background-color 0.3s ease;
+    }
+
+    img {
+      width: 150px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    button {
+      margin-top: 10px;
+      display: block;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background: #009688;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    button:hover {
+      background: #00796b;
+      transform: scale(1.02);
+    }
+
+    .correct {
+      background-color: #c8e6c9 !important;
+      animation: flashCorrect 0.3s ease-in-out;
+    }
+
+    .wrong {
+      background-color: #ffcdd2 !important;
+      animation: flashWrong 0.3s ease-in-out;
+    }
+
+    @keyframes flashCorrect {
+      0% { background-color: #a5d6a7; }
+      100% { background-color: #c8e6c9; }
+    }
+
+    @keyframes flashWrong {
+      0% { background-color: #ef9a9a; }
+      100% { background-color: #ffcdd2; }
+    }
+
+    #score {
+      font-weight: bold;
+      color: green;
+    }
+
+    .medal {
+      font-size: 50px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🩺 Salva Bolivia Saludable 🩺</h1>
+  <canvas id="confetti" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;"></canvas>
+
+  <div class="question-container" id="quiz">
+    <img id="questionImage" src="" alt="Imagen ilustrativa">
+    <p id="question"></p>
+    <div id="answers"></div>
+    <p id="score">Salud de Bolivia: 100%</p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    const questions = [
+      {
+        question: "¿Cuál es una causa común de hipertensión?",
+        answers: ["Falta de potasio y exceso de sodio", "Dormir mucho", "Leer mucho"],
+        correct: 0,
+        image: "https://openmoji.org/data/color/svg/1F9EC.svg"
+      },
+      {
+        question: "¿Qué porcentaje de muertes en Bolivia son causadas por ENT?",
+        answers: ["20%", "50%", "73%"],
+        correct: 2,
+        image: "https://openmoji.org/data/color/svg/1F5FA.svg"
+      },
+      {
+        question: "¿Qué factor reduce el riesgo de diabetes tipo 2?",
+        answers: ["Ejercicio regular", "Ver TV", "Comer mucha sal"],
+        correct: 0,
+        image: "https://openmoji.org/data/color/svg/1F3CB.svg"
+      },
+      {
+        question: "¿Qué comunidad boliviana es ejemplo de salud cardiovascular?",
+        answers: ["Los Tsimanes", "Los Aymaras", "Los Guaraníes"],
+        correct: 0,
+        image: "https://openmoji.org/data/color/svg/1F3DE.svg"
+      },
+      {
+        question: "¿Cuál es un transporte típico en zonas rurales?",
+        answers: ["Teleférico", "Toro", "Tren subterráneo"],
+        correct: 1,
+        image: "https://openmoji.org/data/color/svg/1F402.svg"
+      }
+    ];
+
+    let current = 0;
+    let score = 100;
+
+    function showQuestion() {
+      if (current >= questions.length) {
+        finishGame();
+        return;
+      }
+
+      const q = questions[current];
+      document.getElementById("question").innerText = q.question;
+      document.getElementById("questionImage").src = q.image;
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = '';
+      q.answers.forEach((answer, i) => {
+        const btn = document.createElement("button");
+        btn.innerText = answer;
+        btn.onclick = () => {
+          if (i === q.correct) {
+            btn.classList.add("correct");
+            score += 5;
+          } else {
+            btn.classList.add("wrong");
+            score -= 10;
+          }
+          document.getElementById("score").innerText = Salud de Bolivia: ${score}%;
+
+          setTimeout(() => {
+            current++;
+            showQuestion();
+          }, 800);
+        };
+        answersDiv.appendChild(btn);
+      });
+    }
+
+    function finishGame() {
+      const medal = score > 120 ? "🥇 Medalla de Oro" :
+                    score >= 100 ? "🥈 Medalla de Plata" :
+                    "🥉 Medalla de Bronce";
+
+      document.getElementById("quiz").innerHTML = `
+        <h2>¡Juego terminado!</h2>
+        <p>Salud final de Bolivia: ${score}%</p>
+        <div class="medal">${medal}</div>
+      `;
+
+      // lanzar confeti
+      confetti({
+        particleCount: 300,
+        spread: 100,
+        origin: { y: 0.6 }
+      });
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
